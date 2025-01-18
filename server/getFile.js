@@ -49,3 +49,5 @@ class FileHandler {
     unlinkSync(filepath);
   }
 }
+
+module.exports = FileHandler;
