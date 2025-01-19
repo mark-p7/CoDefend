@@ -1,12 +1,13 @@
-const { createWriteStream, existsSync, mkdirSync, unlinkSync } = require("fs");
+const { createWriteStream, existsSync, mkdirSync, unlinkSync, readFileSync } = require("fs");
 const fetch = require("node-fetch");
 const path = require("path");
+const detectFileType = require("detect-file-type");
 
 const CACHE_PATH = path.join(__dirname, "cache");
 
 /**
  * @typedef {Object} FileResponse
- * @param {int} status Return 1 if successfully, 0 if errored
+ * @param {int} status Return 1 if successful, 0 if errored
  * @param {Object} body Response body
  * @param {string} path Absolute filepath of the saved file
  */
@@ -36,7 +37,7 @@ class FileHandler {
         let file = createWriteStream(filepath);
         response.body.pipe(file);
 
-        resolve({status: 1, body: response.body, filepath}); 
+        resolve({status: 1, blob: await response.blob(), filepath}); 
       } else reject({status: 0, body: "Error downloading"});
     });
   }
@@ -47,6 +48,22 @@ class FileHandler {
    */
   clearFile(filepath) {
     unlinkSync(filepath);
+  }
+
+  /**
+   * 
+   * @param {string} filepath 
+   */
+  getDataURL(filepath) {
+    return new Promise(async (resolve, reject) => {
+      const encoding = "base64";
+      const bitmap = fs.readFileSync(filepath);
+      const bits =  new Buffer(bitmap).toString('base64');
+  
+      detectFileType.fromFile(filepath, (err, filetype) => {
+        return resolve('data:' + filetype.mime + ';' + encoding + ',' + bits);
+      });
+    })
   }
 }
 
