@@ -37,6 +37,7 @@ app.post("/scan", async (req, res) => {
 
     res.status(200).json(result);
     delete scanner;
+    fileHandler.clearFile(response.filepath); //Delete the file from cache
     return;
 });
 

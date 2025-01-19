@@ -24,14 +24,14 @@ document.getElementById('scanButtonQuick').onclick = async function() {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ url: pausedDownloadURL })
+                body: JSON.stringify({ url: pausedDownloadURL, options: { virusTotal: false, cloudMersive: true, byteScale: false } })
             })
 
             const result = await response.json();
             console.log(result)
 
-            console.log('result.stats.malicious is', result.stats.malicious);
-            console.log('results.stats.suspicious is', result.stats.suspicious);
+            console.log('result.stats.malicious is'+ result.stats.malicious);
+            console.log('results.stats.suspicious is'+ result.stats.suspicious);
 
             if(result.stats.malicious === 0 && result.stats.suspicious === 0){
                 // Redirect to the novirus page
