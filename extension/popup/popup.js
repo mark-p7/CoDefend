@@ -1,14 +1,17 @@
 // upon clicking the scan button, 
 // it will will send the URL to the back end for scanning
-document.getElementById('scanButton').onclick = async function () {
 
-    document.getElementById('scanButton').style.display = 'block';
+document.getElementById('scanButton').onclick = async function() {
 
     console.log('scanButton clicked!')
 
     await chrome.storage.local.get("pausedDownloadIdAndURL", async (data) => {
 
         if (data.pausedDownloadIdAndURL) {
+        // change the HTML to loading!
+        document.body.innerHTML = loadingHTML;
+
+        if(data.pausedDownloadIdAndURL){
             const pausedDownloadId = data.pausedDownloadIdAndURL.id;
             const pausedDownloadURL = data.pausedDownloadIdAndURL.url;
 
@@ -16,19 +19,33 @@ document.getElementById('scanButton').onclick = async function () {
             console.log('pausedDownloadURL is', pausedDownloadURL);
             console.log('sending URL to backend');
 
-            const response = await fetch("http://localhost:3000/scan", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ url: pausedDownloadURL })
-            })
+            // const response = await fetch("http://localhost:3000/scan", {
+            //     method: "POST",
+            //     headers: {
+            //         "Content-Type": "application/json"
+            //     },
+            //     body: JSON.stringify({ url: pausedDownloadURL })
+            // })
 
-            const result = await response.json();
-            console.log(result)
+            // const result = await response.json();
+            // console.log(result)
+
+            // setTimeout(() => {
+            //     console.log('setTimeout is run!')
+            //     // Redirect to the success page
+            //     window.location.href = '../novirus/novirus.html';
+            // }, 3000);
+
+            setTimeout(() => {
+                console.log('setTimeout is run!')
+                // Redirect to the success page
+                window.location.href = '../virusfound/virusfound.html';
+            }, 1000);
+
         }
-    });
-}
+    }
+});
+};
 
 // document.getElementById('resumeButton').onclick = function () {
 
@@ -78,3 +95,29 @@ document.getElementById('cancelButton').onclick = function () {
         }
     });
 };
+
+
+
+const loadingHTML = 
+`
+    <div class="container">
+        <div class="logo">Co<span>Defend</span><span class="shield">CD</span></div>
+        <div class="subtitle">Anti-Virus File Scanner</div>
+
+        <div class="progress">
+            <div class="spinner">
+                <div class="circle"></div>
+                <div class="circle"></div>
+                <div class="circle"></div>
+                <div class="circle"></div>
+                <div class="circle"></div>
+                <div class="circle"></div>
+                <div class="circle"></div>
+                <div class="circle"></div>
+            </div>
+        </div>
+
+        <button class="btn-secondary">Cancel scan</button>
+    </div>
+
+`
