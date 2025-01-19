@@ -29,16 +29,15 @@ document.getElementById('resumeButton').onclick = function() {
         chrome.downloads.resume(pausedDownloadId, () => {
           if (chrome.runtime.lastError) {
             console.error("Error resuming download:", chrome.runtime.lastError);
-            alert("Failed to resume the download.");
           } else {
             console.log("Download resumed:", pausedDownloadId);
-            alert("Download resumed successfully.");
             chrome.storage.local.set({ pausedDownloadIdAndURL: null});
+            window.location.href = '../resumescreen/resumescreen.html';
           }
         });
       } else {
         console.warn("No paused download to resume.");
-        alert("No paused download to resume.");
+        
       }
     });
 }
