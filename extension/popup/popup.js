@@ -28,10 +28,6 @@ document.getElementById('scanButtonQuick').onclick = async function() {
             })
 
             const result = await response.json();
-            console.log(result)
-
-            console.log('result.stats.malicious is'+ result.stats.malicious);
-            console.log('results.stats.suspicious is'+ result.stats.suspicious);
 
             if(result.stats.malicious === 0 && result.stats.suspicious === 0){
                 // Redirect to the novirus page
@@ -73,8 +69,8 @@ document.getElementById('scanButtonFull').onclick = async function() {
             const pausedDownloadId = data.pausedDownloadIdAndURL.id;
             const pausedDownloadURL = data.pausedDownloadIdAndURL.url;
 
-            console.log('pausedDownloadId is', pausedDownloadId);
-            console.log('pausedDownloadURL is', pausedDownloadURL);
+            console.log('pausedDownloadId is'+ pausedDownloadId);
+            console.log('pausedDownloadURL is'+ pausedDownloadURL);
             console.log('sending URL to backend');
 
             const response = await fetch("http://localhost:3000/scan", {
@@ -86,10 +82,6 @@ document.getElementById('scanButtonFull').onclick = async function() {
             })
 
             const result = await response.json();
-            console.log(result)
-
-            console.log('result.stats.malicious is', result.stats.malicious);
-            console.log('results.stats.suspicious is', result.stats.suspicious);
 
             if(result.stats.malicious === 0 && result.stats.suspicious === 0){
                 // Redirect to the novirus page
