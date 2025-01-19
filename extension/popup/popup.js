@@ -1,12 +1,23 @@
 // upon clicking the scan button, 
 // it will will send the URL to the back end for scanning
+
+
+
 document.getElementById('scanButton').onclick = function() {
 
-    document.getElementById('scanButton').style.display = 'block';
+
+    // Redirect to the loading page
+    // window.location.href = '../loading/loading_test.html';
 
     console.log('scanButton clicked!')
 
     chrome.storage.local.get("pausedDownloadIdAndURL", (data) => {
+
+        // change the HTML to loading!
+        document.body.innerHTML = loadingHTML;
+
+
+
 
         if(data.pausedDownloadIdAndURL){
             const pausedDownloadId = data.pausedDownloadIdAndURL.id;
@@ -34,6 +45,20 @@ document.getElementById('scanButton').onclick = function() {
             // .catch((error) => {
             //     console.error("Error sending URL to server:", error);
             // });
+
+
+            // setTimeout(() => {
+            //     console.log('setTimeout is run!')
+            //     // Redirect to the success page
+            //     window.location.href = '../novirus/novirus.html';
+            // }, 3000);
+
+            setTimeout(() => {
+                console.log('setTimeout is run!')
+                // Redirect to the success page
+                window.location.href = '../virusfound/virusfound.html';
+            }, 1000);
+
         }
     });
 }
@@ -89,3 +114,28 @@ document.getElementById('cancelButton').onclick = function() {
         }
       });
 };
+
+
+const loadingHTML = 
+`
+    <div class="container">
+        <div class="logo">Co<span>Defend</span><span class="shield">CD</span></div>
+        <div class="subtitle">Anti-Virus File Scanner</div>
+
+        <div class="progress">
+            <div class="spinner">
+                <div class="circle"></div>
+                <div class="circle"></div>
+                <div class="circle"></div>
+                <div class="circle"></div>
+                <div class="circle"></div>
+                <div class="circle"></div>
+                <div class="circle"></div>
+                <div class="circle"></div>
+            </div>
+        </div>
+
+        <button class="btn-secondary">Cancel scan</button>
+    </div>
+
+`

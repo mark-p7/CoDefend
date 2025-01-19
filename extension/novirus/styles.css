@@ -1,0 +1,92 @@
+/* General body styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #000;
+    color: white;
+    text-align: center;
+}
+
+/* Main container styling */
+.container {
+    padding: 20px;
+    width: 300px;
+    margin: 0 auto;
+}
+
+/* Logo styling */
+.logo {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.logo span {
+    color: #1D73E8;
+}
+
+.shield {
+    font-size: 18px;
+    background: #1D73E8;
+    border-radius: 50%;
+    color: white;
+    display: inline-block;
+    padding: 2px 8px;
+    margin-left: 4px;
+}
+
+/* Subtitle text styling */
+.subtitle {
+    font-size: 14px;
+    margin: 10px 0 20px;
+}
+
+/* Scan status styling */
+.scan-status {
+    margin: 20px 0;
+}
+
+.status-text {
+    font-size: 18px;
+    margin: 0;
+}
+
+.status-success {
+    font-size: 18px;
+    color: #1D73E8;
+    margin: 5px 0 15px;
+}
+
+/* Link styling */
+.link {
+    color: #1D73E8;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+
+/* Button styling */
+.btn-secondary {
+    background-color: white;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    background-color: #ddd;
+}
+
+/* Footer styling */
+.footer {
+    background-color: #444;
+    padding: 10px 20px;
+    font-size: 12px;
+}
