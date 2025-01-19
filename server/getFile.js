@@ -37,7 +37,7 @@ class FileHandler {
         let file = createWriteStream(filepath);
         response.body.pipe(file);
 
-        resolve({status: 1, blob: await response.blob(), filepath}); 
+        resolve({status: 1, blob: await response.blob(), filepath, type: await this.getFileType(filepath)}); 
       } else reject({status: 0, body: "Error downloading"});
     });
   }
@@ -51,19 +51,33 @@ class FileHandler {
   }
 
   /**
-   * 
+   * Get the file data as a dataURL
    * @param {string} filepath 
+   * @returns {Promise} dataURL
    */
   getDataURL(filepath) {
     return new Promise(async (resolve, reject) => {
       const encoding = "base64";
-      const bitmap = fs.readFileSync(filepath);
+      const bitmap = readFileSync(filepath);
       const bits =  new Buffer(bitmap).toString('base64');
   
       detectFileType.fromFile(filepath, (err, filetype) => {
         return resolve('data:' + filetype.mime + ';' + encoding + ',' + bits);
       });
     })
+  }
+
+  /**
+   * Get the file type
+   * @param {string} filepath 
+   * @returns {Promise} {type, mime}
+   */
+  getFileType(filepath) {
+    return new Promise(async (resolve, reject) => {
+      detectFileType.fromFile(filepath, (err, filetype) => {
+        return resolve(filetype);
+      });
+    });
   }
 }
 
