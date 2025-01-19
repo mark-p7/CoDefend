@@ -19,16 +19,28 @@ document.getElementById('scanButtonQuick').onclick = async function() {
             console.log('pausedDownloadURL is', pausedDownloadURL);
             console.log('sending URL to backend');
 
-            // const response = await fetch("http://localhost:3000/scan", {
-            //     method: "POST",
-            //     headers: {
-            //         "Content-Type": "application/json"
-            //     },
-            //     body: JSON.stringify({ url: pausedDownloadURL })
-            // })
+            const response = await fetch("http://localhost:3000/scan", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ url: pausedDownloadURL })
+            })
 
-            // const result = await response.json();
-            // console.log(result)
+            const result = await response.json();
+            console.log(result)
+
+            console.log('result.stats.malicious is', result.stats.malicious);
+            console.log('results.stats.suspicious is', result.stats.suspicious);
+
+            if(result.stats.malicious === 0 && result.stats.suspicious === 0){
+                // Redirect to the novirus page
+                window.location.href = '../novirus/novirus.html';
+            }
+            else {
+                // Redirect to the virus page
+                window.location.href = '../virusfound/virusfound.html';
+            }
 
             // setTimeout(() => {
             //     console.log('setTimeout is run!')
@@ -36,11 +48,11 @@ document.getElementById('scanButtonQuick').onclick = async function() {
             //     window.location.href = '../novirus/novirus.html';
             // }, 3000);
 
-            setTimeout(() => {
-                console.log('setTimeout is run!')
-                // Redirect to the success page
-                window.location.href = '../virusfound/virusfound.html';
-            }, 1000);
+            // setTimeout(() => {
+            //     console.log('setTimeout is run!')
+            //     // Redirect to the success page
+            //     window.location.href = '../virusfound/virusfound.html';
+            // }, 1000);
 
         }
     }
@@ -65,16 +77,28 @@ document.getElementById('scanButtonFull').onclick = async function() {
             console.log('pausedDownloadURL is', pausedDownloadURL);
             console.log('sending URL to backend');
 
-            // const response = await fetch("http://localhost:3000/scan", {
-            //     method: "POST",
-            //     headers: {
-            //         "Content-Type": "application/json"
-            //     },
-            //     body: JSON.stringify({ url: pausedDownloadURL })
-            // })
+            const response = await fetch("http://localhost:3000/scan", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ url: pausedDownloadURL })
+            })
 
-            // const result = await response.json();
-            // console.log(result)
+            const result = await response.json();
+            console.log(result)
+
+            console.log('result.stats.malicious is', result.stats.malicious);
+            console.log('results.stats.suspicious is', result.stats.suspicious);
+
+            if(result.stats.malicious === 0 && result.stats.suspicious === 0){
+                // Redirect to the novirus page
+                window.location.href = '../novirus/novirus.html';
+            }
+            else {
+                // Redirect to the virus page
+                window.location.href = '../virusfound/virusfound.html';
+            }
 
             // setTimeout(() => {
             //     console.log('setTimeout is run!')
@@ -82,11 +106,11 @@ document.getElementById('scanButtonFull').onclick = async function() {
             //     window.location.href = '../novirus/novirus.html';
             // }, 3000);
 
-            setTimeout(() => {
-                console.log('setTimeout is run!')
-                // Redirect to the success page
-                window.location.href = '../virusfound/virusfound.html';
-            }, 1000);
+            // setTimeout(() => {
+            //     console.log('setTimeout is run!')
+            //     // Redirect to the success page
+            //     window.location.href = '../virusfound/virusfound.html';
+            // }, 1000);
 
         }
     }

@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
             console.log("Download resumed:", pausedDownloadId);
             chrome.storage.local.set({ pausedDownloadIdAndURL: null});
             // move the user to the resumed page
-            window.location.href = '../resumescreen/resumescreen.html';
+            // window.location.href = '../resumescreen/resumescreen.html';
           }
         });
       } else {
