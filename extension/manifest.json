@@ -5,7 +5,7 @@
     "description": "Chrome extension that scans if a download has any viruses before you download to your machine.",
     "action": {
       "default_popup": "popup/popup.html",
-      "default_icon": "icons/hello_extensions.png"
+      "default_icon": "icons/shield.png"
     },
     "permissions": [
       "downloads",
