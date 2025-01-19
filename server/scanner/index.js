@@ -1,6 +1,22 @@
-require("dotenv").config({ path: '../.env' });
+require("dotenv").config();
 const fetch = require("node-fetch");
 const FormData = require("form-data");
+
+/**
+ * @typedef {Object} FileVirusAnalysis
+ * @param {Object} [virusTotalResult] Results from VirusTotal
+ * @param {Object} [byteScaleResult] Results from Bytescale
+ * @param {Object} [cloudMersiveResult] Results from CloudMersive
+ * @param {Object} stats Total stats from all virus scans
+ * @param {Array} viruses All found viruses
+ */
+
+/**
+ * @typedef {Object} UrlVirusAnalysis
+ * @param {Object} [virusTotalResult] Results from VirusTotal
+ * @param {Object} stats Total stats from all virus scans
+ * @param {Array} viruses All found viruses
+ */
 
 class Scanner {
     constructor(fileoptions, options) {
@@ -14,32 +30,90 @@ class Scanner {
         };
     }
 
+    /**
+     * Scan the file for any potential viruses
+     * @returns {FileVirusAnalysis} 
+     */
     scanFileforViruses = async () => {
-        const result = {};
+        const result = { stats: {
+          malicious: 0,
+          suspicious: 0,
+          undetected: 0,
+          harmless: 0,
+          failed: 0
+        }, viruses: []};
 
         // VirusTotal
         if (this.options.virusTotal) {
             result["virusTotalResult"] = await this.scanFileThroughVirusTotal();
+            let stat = result["virusTotalResult"].stats
+
+            result.stats.malicious += stat.malicious;
+            result.stats.suspicious += stat.suspicious;
+            result.stats.undetected += stat.undetected;
+            result.stats.harmless += stat.harmless;
+            result.stats.failed += stat.failure + stat['type-unsupported'];
         }
 
         //Bytescale
         if (this.options.byteScale) {
             result["byteScaleResult"] = (await this.scanFileThroughBytescale()).files[0];
+
+            switch (result["byteScaleResult"].result) {
+              case "Healthy": result.stats.harmless++; break;
+              case "Infected": result.stats.malicious++; break;
+              case "Skipped": result.stats.failed++; break;
+            }
+
+            result.viruses = result.viruses.concat(result["byteScaleResult"].viruses);
         }
 
         //CloudMersive
         if (this.options.cloudMersive) {
             result["cloudMersiveResult"] = await this.scanFileThroughCloudmersive();
+            if (result["cloudMersiveResult"].CleanResult) {
+              result.stats.harmless++;
+            } else {
+              result.stats.malicious++;
+              result.viruses = result.viruses.concat(result["cloudMersiveResult"].FoundViruses || []);
+            }
         }
-
 
         return result;
     }
 
     /**
- * Get File/URL Analysis Report
- * @param {string} analysis_id Analysis ID returned by VirusTotal
- */
+     * Scan the url for potential viruses
+     * @param {string} url Url to scan
+     * @returns {UrlVirusAnalysis}
+     */
+    scanUrlForViruses = async (url) => {
+      const result = { stats: {
+        malicious: 0,
+        suspicious: 0,
+        undetected: 0,
+        harmless: 0,
+        failed: 0
+      }};
+
+      if (this.options.virusTotal) {
+        result["virusTotalResult"] = await this.scanUrlThroughVirusTotal(url);
+        let stat = result["virusTotalResult"].stats
+
+        result.stats.malicious += stat.malicious;
+        result.stats.suspicious += stat.suspicious;
+        result.stats.undetected += stat.undetected;
+        result.stats.harmless += stat.harmless;
+        result.stats.failed += stat.timeout;
+      }
+
+      return result;
+    }
+
+    /**
+     * Get File/URL Analysis Report
+     * @param {string} analysis_id Analysis ID returned by VirusTotal
+     */
     async getVirusTotalAnalysis(analysis_id) {
         const options = {
             method: 'GET',
@@ -54,46 +128,33 @@ class Scanner {
         } else return data;
     }
 
+    /**
+     * Scan the file using VirusTotal
+     * @returns {Object} Object of results
+     */
     scanFileThroughVirusTotal = async () => {
-        // virustotal.postFiles({file: this.file})
-        // .then(({ data }) => console.log(data))
-        // .catch(err => console.error(err));
         const formData = new FormData();
         formData.append('file', await this._blobToBuffer(this.fileblob), { filename: this.filename, type: this.filetype.mime });
 
         const options = {
             method: 'POST',
-            headers: { accept: 'application/json', 'x-apikey': process.env.VIRUS_TOTAL_API_KEY },
+            headers: { accept: 'application/json', 'x-apikey': process.env.VIRUSTOTAL_API_KEY },
             body: formData
         };
 
         const res = await fetch('https://www.virustotal.com/api/v3/files', options);
+
         const analysis_id = (await res.json()).data.id;
         const analysis = await this._getVirusTotalAnalysis(analysis_id);
-
-        console.log(analysis)
 
         return analysis;
     }
 
-    // scanFileThroughCloudmersive = async () => {
-    //     const formData = new FormData();
-    //     formData.append('inputFile', this.file);
-
-    //     console.log(formData)
-    //     const options = {
-    //         method: 'POST',
-    //         headers: { accept: 'application/json', 'content-type': 'multipart/form-data', 'Apikey': process.env.CLOUDMERSIVE_API_KEY },
-    //         formData: formData
-    //     };
-
-    //     const res = await fetch('https://api.cloudmersive.com/virus/scan/file', options)
-    //     if (!res.ok) console.log(await res.text());
-    //     const result = await res.json();
-    //     console.log(result)
-    //     return result;
-    // }
-
+    /**
+     * Scan the url using VirusTotal
+     * @param {string} url Url to scan
+     * @returns {Object} Object of results
+     */
     scanUrlThroughVirusTotal = async (url) => {
         if (!url) return "No URL Provided";
         const options = {
@@ -119,18 +180,23 @@ class Scanner {
         return new Promise(async (resolve, reject) => {
             const options = {
                 method: 'GET',
-                headers: { accept: 'application/json', 'content-type': 'multipart/form-data', 'x-apikey': process.env.VIRUS_TOTAL_API_KEY }
+                headers: { accept: 'application/json', 'content-type': 'multipart/form-data', 'x-apikey': process.env.VIRUSTOTAL_API_KEY }
             };
 
             const res = await fetch('https://www.virustotal.com/api/v3/analyses/' + analysis_id, options);
             const data = (await res.json()).data.attributes;
 
             if (data.status == 'queued') {
+                await this.sleep(1000);
                 return resolve(this._getVirusTotalAnalysis(analysis_id));
             } else return resolve(data);
         });
     }
 
+    /**
+     * Scan the file using CloudMersive
+     * @returns {Object} Object of results
+     */
     scanFileThroughCloudmersive = async () => {
         const formData = new FormData();
         formData.append('inputFile', await this._blobToBuffer(this.fileblob), { filename: this.filename, type: this.filetype.mime });
@@ -146,6 +212,10 @@ class Scanner {
         return result;
     }
 
+    /**
+     * Scan the file using Bytescale
+     * @returns {Object} Object of results
+     */
     scanFileThroughBytescale = async () => {
         const options = {
             method: 'POST',
@@ -177,7 +247,8 @@ class Scanner {
             const data = await res.json();
 
             if (data.status == 'Pending') {
-                return resolve(await this._getBytescaleAnalysis(url));
+                await this.sleep(1000);
+                return resolve(await this._getBytescaleAnalysis(fileurl));
             } else return resolve(data.summary.result);
         })
     }
@@ -190,6 +261,10 @@ class Scanner {
     async _blobToBuffer(blob) {
         const arrayBuffer = await blob.arrayBuffer();
         return Buffer.from(arrayBuffer);
+    }
+
+    sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
     }
 }
 

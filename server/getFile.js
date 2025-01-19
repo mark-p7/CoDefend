@@ -27,9 +27,14 @@ class FileHandler {
     return new Promise(async (resolve, reject) => {
       if (!url) return reject({status: 0, body: "No URL provided"});
 
-      //! This breaks if the filename is not in the link, only supports https
-      const filename = url.split("/").pop(); //Gets the filename from the end of the url
-      const response = await fetch(url);
+      //Remove search parameters from link
+      const urlObj = new URL(url);
+      urlObj.search = '';
+      const urlstring = urlObj.toString();
+
+      //Gets the filename from the end of the url
+      const filename = urlstring.split("/").pop(); 
+      const response = await fetch(urlstring); // Only supports https
   
       if (response.ok && response.body) {
         const filepath = path.join(CACHE_PATH, filename);
