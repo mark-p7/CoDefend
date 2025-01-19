@@ -25,19 +25,33 @@ app.post("/scan", async (req, res) => {
         return;
     }
 
-    // Create File
+    var scanner;
     const fileHandler = new FileHandler();
-    const response = await fileHandler.downloadFile(url);
+    var result = {
+        stats: {
+            malicious: 0,
+            suspicious: 0,
+            undetected: 1,
+            harmless: 0,
+            failed: 0
+        }, viruses: []
+    };
+    let response;
 
-    // Defaulting virustotal to true for now, will change after we get list of software services to render done on UI
-    const scanner = new Scanner(response, { virusTotal: options?.virusTotal || true, cloudMersive: options?.cloudMersive || false, byteScale: options?.byteScale || false });
-    const result = await scanner.scanFileforViruses();
+    try {
+        // Create File
+        response = await fileHandler.downloadFile(url);
 
-    console.log("Sending back results");
+        // Defaulting virustotal to true for now, will change after we get list of software services to render done on UI
+        scanner = new Scanner(response, { virusTotal: options?.virusTotal || true, cloudMersive: options?.cloudMersive || false, byteScale: options?.byteScale || false });
+        result = await scanner.scanFileforViruses();
 
+        console.log("Sending back results");
+    } catch (e) { }
+
+    if (scanner) delete scanner;
+    if (response) fileHandler.clearFile(response.filepath); //Delete the file from cache
     res.status(200).json(result);
-    delete scanner;
-    fileHandler.clearFile(response.filepath); //Delete the file from cache
     return;
 });
 
@@ -45,19 +59,34 @@ app.post("/scanurl", async (req, res) => {
     const { url, options } = req.body;
 
     if (!url) {
-      res.status(400).json({ error: "No URL provided" });
-      return;
+        res.status(400).json({ error: "No URL provided" });
+        return;
     }
 
-    const scanner = new Scanner(null, { virusTotal: options?.virusTotal || true });
-    const result = await scanner.scanUrlForViruses(url);
+    var scanner;
+    var result = {
+        stats: {
+            malicious: 0,
+            suspicious: 0,
+            undetected: 1,
+            harmless: 0,
+            failed: 0
+        }
+    };;
 
-    console.log("Sending back results");
-    console.log(result);
+    try {
+        scanner = new Scanner(null, { virusTotal: options?.virusTotal || true });
+        result = await scanner.scanUrlForViruses(url);
 
+        console.log("Sending back results");
+        console.log(result);
+
+    } catch (e) { }
+
+    if (scanner) delete scanner;
     res.status(200).json(result);
-    delete scanner;
     return;
+
 })
 
 const main = async () => {
