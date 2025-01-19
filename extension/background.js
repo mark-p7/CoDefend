@@ -37,7 +37,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 
       const result = await response.json();
       if (result.stats.suspicious || result.stats.malicious) {
-        chrome.action.setPopup({popup: './popup/url_popup.html'});
+        chrome.action.setPopup({popup: './urlvirus/url_popup.html'});
         chrome.action.openPopup();
       }
     }

@@ -53,7 +53,7 @@ app.post("/scanurl", async (req, res) => {
     const result = await scanner.scanUrlForViruses(url);
 
     console.log("Sending back results");
-    console.log(results);
+    console.log(result);
 
     res.status(200).json(result);
     delete scanner;
