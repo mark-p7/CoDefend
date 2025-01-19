@@ -1,0 +1,19 @@
+{
+    "manifest_version": 3,
+    "name": "CoDefend",
+    "version": "1.0",
+    "description": "Chrome extension that scans if a download has any viruses before you download to your machine.",
+    "action": {
+      "default_popup": "popup/popup.html",
+      "default_icon": "icons/hello_extensions.png"
+    },
+    "permissions": [
+      "downloads",
+      "background",
+      "notifications",
+      "storage"
+    ],
+    "background": {
+      "service_worker": "background.js"
+    }
+  }
