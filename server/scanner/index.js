@@ -228,7 +228,17 @@ class Scanner {
 
         const res = await fetch(`https://api.bytescale.com/v2/accounts/${process.env.BYTESCALE_ACCOUNT_ID}/uploads/binary`, options)
         const result = await res.json();
-
+        if (result.error) {
+          return {
+            files: [
+              {
+                viruses: [],
+                result: "Skipped"
+              }
+            ]
+          }
+        }
+        
         const analysis = await this._getBytescaleAnalysis(result.fileUrl);
 
         return analysis;
