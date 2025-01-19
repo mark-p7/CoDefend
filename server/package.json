@@ -1,7 +1,9 @@
 {
   "dependencies": {
+    "detect-file-type": "^0.2.8",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "form-data": "^4.0.1",
     "node-fetch": "^2.7.0"
   }
 }
