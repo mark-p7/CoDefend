@@ -78,7 +78,7 @@ document.getElementById('scanButtonFull').onclick = async function() {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ url: pausedDownloadURL })
+                body: JSON.stringify({ url: pausedDownloadURL, options: { virusTotal: true, cloudMersive: true, byteScale: true }})
             })
 
             const result = await response.json();
