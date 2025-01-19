@@ -52,9 +52,9 @@ body {
     margin: 0;
 }
 
-.status-warning {
+.status-success {
     font-size: 18px;
-    color: #E74C3C;
+    color: #1D73E8;
     margin: 5px 0 15px;
 }
 
@@ -76,23 +76,12 @@ body {
     border: none;
     border-radius: 5px;
     padding: 10px 20px;
-    font-size: 14px;
+    font-size: 16px;
     cursor: pointer;
 }
 
 .btn-secondary:hover {
     background-color: #ddd;
-}
-
-.btn-warning {
-    background-color: red;
-    color: black;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    font-size: 14px;
-    cursor: pointer;
-    margin-top: 10px;
 }
 
 /* Footer styling */

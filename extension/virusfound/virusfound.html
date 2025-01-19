@@ -13,17 +13,25 @@
 
         <div class="scan-status">
             <p class="status-text">The scan is complete.</p>
-            <p class="status-warning">Viruses were found.</p>
-            <p class="status-warning">Virus #1 details</p>
-            <p class="status-warning">Virus #2 details</p>
-            <a href="#" class="link">View details</a>
+            <p class="status-warning"># of Viruses were found.</p>
+        </div>
+        <div class="viruses-include">
+            <h3>Viruses include:</h3>
+            <p>Virus #1 details</p>
+            <p>Virus #2 details</p>
         </div>
 
-        <button class="btn-secondary">Cancel download</button>
+
+        <div class="button-container">
+            <button class="btn-secondary" id="cancelButton">Cancel Download</button>
+            <button class="btn-warning" id="resumeButton"> Resume Download</button>
+        </div>
     </div>
     <div class="footer">
         Your files are being scanned.<br>
         Please hold on until the scan is complete.
     </div>
+
+    <script src="virusfound.js"></script>
 </body>
 </html>

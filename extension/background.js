@@ -24,21 +24,21 @@ chrome.downloads.onCreated.addListener((downloadItem) => {
       });
   });
   
-chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-    //If the url was changed
-    if (changeInfo.url) {
-      const response = await fetch("http://localhost:3000/scanurl", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ url: changeInfo.url })
-      })
+// chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+//     //If the url was changed
+//     if (changeInfo.url) {
+//       const response = await fetch("http://localhost:3000/scanurl", {
+//         method: "POST",
+//         headers: {
+//             "Content-Type": "application/json"
+//         },
+//         body: JSON.stringify({ url: changeInfo.url })
+//       })
 
-      const result = await response.json();
-      if (result.stats.suspicious || result.stats.malicious) {
-        chrome.action.setPopup({popup: './popup/url_popup.html'});
-        chrome.action.openPopup();
-      }
-    }
-  })
+//       const result = await response.json();
+//       if (result.stats.suspicious || result.stats.malicious) {
+//         chrome.action.setPopup({popup: './popup/url_popup.html'});
+//         chrome.action.openPopup();
+//       }
+//     }
+//   })
