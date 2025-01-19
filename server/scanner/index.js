@@ -20,9 +20,9 @@ const FormData = require("form-data");
 
 class Scanner {
     constructor(fileoptions, options) {
-        this.fileblob = fileoptions.blob;
-        this.filetype = fileoptions.type;
-        this.filename = fileoptions.filepath.split("/").pop();
+        this.fileblob = fileoptions?.blob || null;
+        this.filetype = fileoptions?.type || null;
+        this.filename = fileoptions?.filepath.split("/").pop() || null;
         this.options = {
             virusTotal: options.virusTotal || false,
             byteScale: options.byteScale || false,

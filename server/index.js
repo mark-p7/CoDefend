@@ -36,8 +36,28 @@ app.post("/scan", async (req, res) => {
     console.log("Sending back results");
 
     res.status(200).json(result);
+    delete scanner;
     return;
 });
+
+app.post("/scanurl", async (req, res) => {
+    const { url, options } = req.body;
+
+    if (!url) {
+      res.status(400).json({ error: "No URL provided" });
+      return;
+    }
+
+    const scanner = new Scanner(null, { virusTotal: options?.virusTotal || true });
+    const result = await scanner.scanUrlForViruses(url);
+
+    console.log("Sending back results");
+    console.log(results);
+
+    res.status(200).json(result);
+    delete scanner;
+    return;
+})
 
 const main = async () => {
     console.log("Starting server...");
