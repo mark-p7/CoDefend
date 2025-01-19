@@ -38,13 +38,11 @@ const main = async () => {
     // Create File
     const fileHandler = new FileHandler();
     const res = await fileHandler.downloadFile("https://images.pexels.com/photos/20263436/pexels-photo-20263436/free-photo-of-revel-atlantic-city-hotel-in-atlantic-city-in-usa.jpeg");
-
-    const scanner = new Scanner(res.file, { virusTotal: true });
+    const scanner = new Scanner(res, { virusTotal: true, cloudMersive: false, byteScale: false });
     scanner.scanFileforViruses();
+    scanner.scanUrlThroughVirusTotal();
 
-    // fileHandler.clearFile();
-
-
+    fileHandler.clearFile(res.filepath);
 }
 
 main();

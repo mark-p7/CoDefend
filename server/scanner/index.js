@@ -9,6 +9,7 @@ class Scanner {
         this.options = {
             virusTotal: options.virusTotal || false,
             byteScale: options.byteScale || false,
+            cloudMersive: options.cloudMersive || false,
         };
     }
 
@@ -18,9 +19,17 @@ class Scanner {
         // VirusTotal
         if (this.options.virusTotal) {
             result["virusTotalResult"] = await this.scanFileThroughVirusTotal();
+        } 
+
+        //Bytescale
+        if (this.options.byteScale) {
+          result["byteScaleResult"] = (await this.scanFileThroughBytescale()).files[0];
         }
 
-        this.scanFileThroughBytescale();
+        //CloudMersive
+        if (this.options.cloudMersive) {
+          result["cloudMersiveResult"] = await this.scanFileThroughCloudmersive();
+        }
 
 
         return result;
@@ -31,9 +40,8 @@ class Scanner {
         // virustotal.postFiles({file: this.file})
         // .then(({ data }) => console.log(data))
         // .catch(err => console.error(err));
-
         const formData = new FormData();
-        formData.append('file', this.file);
+        formData.append('file', await this._blobToBuffer(this.fileblob), { filename: 'name' });
 
         const options = {
             method: 'POST',
@@ -90,25 +98,22 @@ class Scanner {
     }
 
     scanFileThroughCloudmersive = async () => {
-      console.log("called")
       const formData = new FormData();
-      formData.append('inputFile', this.file);
+      formData.append('inputFile', await this._blobToBuffer(this.fileblob));
 
       const options = {
           method: 'POST',
           headers: { accept: 'application/json', 'content-type': 'multipart/form-data', 'Apikey': process.env.CLOUDMERSIVE_API_KEY },
+          body: formData
       };
 
-      const res = await fetch('https://api.cloudmersive.com/virus/scan/file', options)
+      const res = await fetch('https://api.cloudmersive.com/virus/scan/file', options);
       const result = await res.json();
-      console.log(result)
+
       return result;
     }
 
     scanFileThroughBytescale = async () => {
-      console.log("called")
-      console.log(this.filetype);
-
       const options = {
           method: 'POST',
           headers: { 
@@ -142,6 +147,16 @@ class Scanner {
           return resolve(await this._getBytescaleAnalysis(url));
         } else return resolve(data.summary.result);
       })
+    }
+
+    /**
+     * Convert Blob type to Buffer
+     * @param {Blob} blob 
+     * @returns {Buffer}
+     */
+    async _blobToBuffer(blob) {
+      const arrayBuffer = await blob.arrayBuffer();
+      return Buffer.from(arrayBuffer);
     }
 }
 
