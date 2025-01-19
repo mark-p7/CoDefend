@@ -34,17 +34,24 @@ class FileHandler {
 
       //Gets the filename from the end of the url
       const filename = urlstring.split("/").pop(); 
-      const response = await fetch(urlstring); // Only supports https
-  
+      const response = await fetch(this.safeFetchURL(urlstring)); // Only supports https
       if (response.ok && response.body) {
         const filepath = path.join(CACHE_PATH, filename);
-        console.log("Writing to file:", filename);
         let file = createWriteStream(filepath);
         response.body.pipe(file);
-
         resolve({status: 1, blob: await response.blob(), filepath, type: await this.getFileType(filepath)}); 
       } else reject({status: 0, body: "Error downloading"});
     });
+  }
+  
+  /**
+   * Force url to be https if available
+   * @param {string} url 
+   * @returns 
+   */
+  safeFetchURL = (url) => {
+    const secureUrl = url.replace(/^http:/, 'https:');
+    return secureUrl;
   }
 
   /**
