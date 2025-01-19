@@ -1,0 +1,84 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #000;
+    color: white;
+    text-align: center;
+}
+
+.container {
+    padding: 20px;
+    width: 300px;
+}
+
+.logo {
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.logo span {
+    color: #1D73E8;
+}
+
+.shield {
+    font-size: 18px;
+    background: #1D73E8;
+    border-radius: 50%;
+    color: white;
+    display: inline-block;
+    padding: 2px 8px;
+    margin-left: 4px;
+}
+
+.subtitle {
+    font-size: 14px;
+    margin: 10px 0 20px;
+}
+
+.btn-primary {
+    background-color: #1D73E8;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 10px 0;
+}
+
+.btn-primary:hover {
+    background-color: #1661C5;
+}
+
+.btn-secondary {
+    background-color: white;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    background-color: #ddd;
+}
+
+.link {
+    display: block;
+    color: #1D73E8;
+    text-decoration: none;
+    margin: 10px 0;
+    font-size: 14px;
+}
+
+.footer {
+    background-color: #444;
+    padding: 10px 20px;
+    font-size: 12px;
+}
+
+.loading-icon {
+    display: none; /* Initially Hidden */
+}
